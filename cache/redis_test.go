@@ -1,10 +1,11 @@
 package cache
 
 import (
-	"github.com/redis/go-redis/v9"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/redis/go-redis/v9"
+	"github.com/stretchr/testify/assert"
 )
 
 var CacheConnection *GRedis
@@ -36,8 +37,8 @@ func getTestGRedis() *GRedis {
 		return CacheConnection
 	}
 
-	options := redis.Options{
-		Addr:     "127.0.0.1:6379",
+	options := redis.UniversalOptions{
+		Addrs:    []string{"127.0.0.1:6379"},
 		Password: "",
 		DB:       1,
 	}

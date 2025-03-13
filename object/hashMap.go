@@ -14,7 +14,7 @@ func (m *HashMap) Get(key string) interface{} {
 
 // ------------------------------- Merge --------------------------------------------
 func MergeHashMap(toMap *HashMap, subMaps ...*HashMap) *HashMap {
-	if toMap == nil {
+	if toMap == nil || *toMap == nil {
 		toMap = &HashMap{}
 	}
 	// 拍平subMaps
@@ -47,7 +47,7 @@ func MergeHashMap(toMap *HashMap, subMaps ...*HashMap) *HashMap {
 
 // ------------------------------- Replace --------------------------------------------
 func ReplaceHashMapRecursive(toMap *HashMap, subMaps ...*HashMap) *HashMap {
-	if toMap == nil {
+	if toMap == nil || *toMap == nil {
 		toMap = &HashMap{}
 	}
 	// 拍平subMaps

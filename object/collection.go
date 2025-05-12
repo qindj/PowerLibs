@@ -2,10 +2,12 @@ package object
 
 import (
 	"strings"
+	"sync"
 	"time"
 )
 
 type Collection struct {
+	mu   sync.RWMutex
 	items *HashMap
 }
 
@@ -21,10 +23,14 @@ func NewCollection(items *HashMap) *Collection {
 }
 
 func (c *Collection) All() *HashMap {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
 	return c.items
 }
 
 func (c *Collection) Only(keys []string) (result *HashMap) {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
 
 	result = &HashMap{}
 
@@ -57,11 +63,15 @@ func (c *Collection) First() interface{} {
 func (c *Collection) Last() interface{} {
 	return nil
 }
+
 func (c *Collection) Add(key string, value interface{}) {
 
 }
 
 func (c *Collection) Set(key string, value interface{}) {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	segments := strings.Split(key, ".")
 	newItem := c.items
 
@@ -78,52 +88,82 @@ func (c *Collection) Set(key string, value interface{}) {
 }
 
 func (c *Collection) GetBoolPointer(key string, defaultValue bool) *bool {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	value := c.GetBool(key, defaultValue)
 	return &value
 }
 
 func (c *Collection) GetIntPointer(key string, defaultValue int) *int {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	value := c.GetInt(key, defaultValue)
 	return &value
 }
 
 func (c *Collection) GetInt8Pointer(key string, defaultValue int8) *int8 {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	value := c.GetInt8(key, defaultValue)
 	return &value
 }
 
 func (c *Collection) GetInt16Pointer(key string, defaultValue int16) *int16 {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	value := c.GetInt16(key, defaultValue)
 	return &value
 }
 
 func (c *Collection) GetInt32Pointer(key string, defaultValue int32) *int32 {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	value := c.GetInt32(key, defaultValue)
 	return &value
 }
 
 func (c *Collection) GetInt64Pointer(key string, defaultValue int64) *int64 {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	value := c.GetInt64(key, defaultValue)
 	return &value
 }
 
 func (c *Collection) GetStringPointer(key string, defaultValue string) *string {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	value := c.GetString(key, defaultValue)
 	return &value
 
 }
 
 func (c *Collection) GetFloat64Pointer(key string, defaultValue float64) *float64 {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	value := c.GetFloat64(key, defaultValue)
 	return &value
 }
 
 func (c *Collection) GetFloat32Pointer(key string, defaultValue float64) *float32 {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	value := c.GetFloat32(key, defaultValue)
 	return &value
 }
 
 func (c *Collection) GetDateTimePointer(key string, defaultValue time.Time) *time.Time {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	value := c.GetDateTime(key, defaultValue)
 	return &value
 }
@@ -131,45 +171,77 @@ func (c *Collection) GetDateTimePointer(key string, defaultValue time.Time) *tim
 // ----------------------------------------------------------------------------------------
 
 func (c *Collection) GetBool(key string, defaultValue bool) bool {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	return c.Get(key, defaultValue).(bool)
 }
 
 func (c *Collection) GetIntArray(key string, defaultValue []int) []int {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	return c.Get(key, defaultValue).([]int)
 }
 func (c *Collection) GetFloat64Array(key string, defaultValue []float64) []float64 {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	return c.Get(key, defaultValue).([]float64)
 }
 
 func (c *Collection) GetInterfaceArray(key string, defaultValue []interface{}) []interface{} {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	return c.Get(key, defaultValue).([]interface{})
 }
 
 func (c *Collection) GetStringArray(key string, defaultValue []string) []string {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	return c.Get(key, defaultValue).([]string)
 }
 
 func (c *Collection) GetInt(key string, defaultValue int) int {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	return c.Get(key, defaultValue).(int)
 }
 
 func (c *Collection) GetInt8(key string, defaultValue int8) int8 {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	return c.Get(key, defaultValue).(int8)
 }
 
 func (c *Collection) GetInt16(key string, defaultValue int16) int16 {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	return c.Get(key, defaultValue).(int16)
 }
 
 func (c *Collection) GetInt32(key string, defaultValue int32) int32 {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	return c.Get(key, defaultValue).(int32)
 }
 
 func (c *Collection) GetInt64(key string, defaultValue int64) int64 {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	return c.Get(key, defaultValue).(int64)
 }
 
 func (c *Collection) GetString(key string, defaultValue string) string {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
 
 	strResult := c.Get(key, defaultValue).(string)
 	if strResult == "" {
@@ -179,6 +251,8 @@ func (c *Collection) GetString(key string, defaultValue string) string {
 }
 
 func (c *Collection) GetNullString(key string, defaultValue string) NullString {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
 
 	value := c.Get(key, nil)
 
@@ -201,19 +275,30 @@ func (c *Collection) GetNullString(key string, defaultValue string) NullString {
 }
 
 func (c *Collection) GetFloat64(key string, defaultValue float64) float64 {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	return c.Get(key, defaultValue).(float64)
 }
 
 func (c *Collection) GetFloat32(key string, defaultValue float64) float32 {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	return c.Get(key, defaultValue).(float32)
 }
 
 func (c *Collection) GetDateTime(key string, defaultValue time.Time) time.Time {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	return c.Get(key, defaultValue).(time.Time)
 }
 
 // Get an item from an hashMap using "dot" notation.
 func (c *Collection) Get(key string, defaultValue interface{}) interface{} {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
 
 	var result interface{}
 
@@ -257,22 +342,36 @@ func (c *Collection) Forget(key string) {
 }
 
 func (c *Collection) ToHashMap() *HashMap {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	return c.All()
 }
 
 func (c *Collection) ToJson(option int) (string, error) {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	return JsonEncode(c.items)
 }
 func (c *Collection) ToString() string {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	strJson, _ := c.ToJson(0)
 	return strJson
 }
 
 func (c *Collection) Count() int {
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+
 	return len(*c.items)
 }
 
 func (c *Collection) Unserialize(serialized string) *HashMap {
-
+	c.mu.RLock()
+    defer c.mu.RUnlock()
+	
 	return c.items
 }

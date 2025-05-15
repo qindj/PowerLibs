@@ -4,16 +4,25 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"sync"
 )
 
 type HashMap map[string]interface{}
 
+var mu = new(sync.Mutex)
+
 func (m *HashMap) Get(key string) interface{} {
+	mu.Lock()
+	defer mu.Unlock()
+
 	return (*m)[key]
 }
 
 // ------------------------------- Merge --------------------------------------------
 func MergeHashMap(toMap *HashMap, subMaps ...*HashMap) *HashMap {
+	mu.Lock()
+	defer mu.Unlock()
+
 	if toMap == nil || *toMap == nil {
 		toMap = &HashMap{}
 	}
@@ -47,6 +56,9 @@ func MergeHashMap(toMap *HashMap, subMaps ...*HashMap) *HashMap {
 
 // ------------------------------- Replace --------------------------------------------
 func ReplaceHashMapRecursive(toMap *HashMap, subMaps ...*HashMap) *HashMap {
+	mu.Lock()
+	defer mu.Unlock()
+
 	if toMap == nil || *toMap == nil {
 		toMap = &HashMap{}
 	}
@@ -65,6 +77,8 @@ func ReplaceHashMapRecursive(toMap *HashMap, subMaps ...*HashMap) *HashMap {
 // ------------------------------- Conversion ---------------------------------------
 
 func HashMapToStringMap(obj *HashMap) (newMap *StringMap, err error) {
+	mu.Lock()
+	defer mu.Unlock()
 
 	newMap = &StringMap{}
 
@@ -81,6 +95,8 @@ func HashMapToStringMap(obj *HashMap) (newMap *StringMap, err error) {
 }
 
 func StructToHashMapWithXML(obj interface{}) (newMap *HashMap, err error) {
+	mu.Lock()
+	defer mu.Unlock()
 
 	newMap = &HashMap{}
 
@@ -103,6 +119,8 @@ func StructToHashMapWithXML(obj interface{}) (newMap *HashMap, err error) {
 
 }
 func HashMapToStructure(mapObj *HashMap, obj interface{}) (err error) {
+	mu.Lock()
+	defer mu.Unlock()
 
 	strObj, err := JsonEncode(mapObj)
 	if err != nil {
@@ -114,6 +132,9 @@ func HashMapToStructure(mapObj *HashMap, obj interface{}) (err error) {
 }
 
 func StructToHashMap(obj interface{}) (newMap *HashMap, err error) {
+	mu.Lock()
+	defer mu.Unlock()
+
 	data, err := json.Marshal(obj) // Convert to a json string
 
 	if err != nil {
@@ -127,6 +148,9 @@ func StructToHashMap(obj interface{}) (newMap *HashMap, err error) {
 
 // ------------------------------- Search --------------------------------------------
 func InHash(val interface{}, hash *HashMap) (exists bool, key string) {
+	mu.Lock()
+	defer mu.Unlock()
+
 	exists = false
 	key = ""
 
@@ -146,6 +170,9 @@ func InHash(val interface{}, hash *HashMap) (exists bool, key string) {
 }
 
 func GetHashMapKV(maps StringMap) (keys []string, values []interface{}) {
+	mu.Lock()
+	defer mu.Unlock()
+
 	mapLen := len(maps)
 	keys = make([]string, 0, mapLen)
 	values = make([]interface{}, 0, mapLen)
@@ -160,6 +187,9 @@ func GetHashMapKV(maps StringMap) (keys []string, values []interface{}) {
 
 // ------------------------------- Filter --------------------------------------------
 func FilterEmptyHashMap(mapData *HashMap) (filteredMap *HashMap) {
+	mu.Lock()
+	defer mu.Unlock()
+
 	filteredMap = &HashMap{}
 	for k, v := range *mapData {
 		if v != nil {

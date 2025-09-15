@@ -132,7 +132,7 @@ func (period *CarbonPeriod) DiffInDays() int64 {
 }
 
 func (period *CarbonPeriod) IsDiffInDays(inDays int64) bool {
-	diffDays := period.startDatetime.DiffInDaysWithAbs(*period.endDatetime)
+	diffDays := period.startDatetime.DiffAbsInDays(*period.endDatetime)
 
 	return diffDays <= inDays
 }
